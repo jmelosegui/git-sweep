@@ -26,12 +26,11 @@ func main() {
 	exclude := flag.String("exclude", "", "regex to exclude branch names")
 	jsonOut := flag.Bool("json", false, "print plan as JSON")
 	noColor := flag.Bool("no-color", true, "no-op placeholder: color not yet implemented")
-	yes := flag.Bool("yes", false, "auto-confirm deletions (not used yet; always dry-run)")
+	yes := flag.Bool("yes", false, "execute deletions (otherwise dry-run)")
 	debug := flag.Bool("debug", false, "enable debug output (not used yet)")
 	flag.Parse()
 
 	_ = noColor
-	_ = yes
 	_ = debug
 
 	if *showVersion {
@@ -39,7 +38,7 @@ func main() {
 		return
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
 	r := gitpkg.ExecRunner{}
@@ -56,5 +55,22 @@ func main() {
 		return
 	}
 
-	_ = uipkg.PrintPlan(plan, uipkg.Options{JSON: *jsonOut})
+	if err := uipkg.PrintPlan(plan, uipkg.Options{JSON: *jsonOut}); err != nil {
+		fmt.Println("error:", err)
+		return
+	}
+
+	if !*yes {
+		return
+	}
+
+	// Execute deletions when --yes is provided
+	res, err := sweeppkg.ExecuteDeletions(ctx, r, plan, sweeppkg.ExecuteOptions{MaxParallel: 0})
+	if err != nil {
+		fmt.Println("error:", err)
+		return
+	}
+	if err := uipkg.PrintDeletionResult(res); err != nil {
+		fmt.Println("error:", err)
+	}
 }
