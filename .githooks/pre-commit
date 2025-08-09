@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Ensure we run from the repo root
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "$REPO_ROOT"
+
+if ! command -v go >/dev/null 2>&1; then
+  echo "[pre-commit] go not found in PATH" >&2
+  exit 1
+fi
+
+if ! command -v golangci-lint >/dev/null 2>&1; then
+  echo "[pre-commit] golangci-lint not found in PATH" >&2
+  echo "Install from: https://golangci-lint.run/" >&2
+  exit 1
+fi
+
+echo "[pre-commit] formatting (go fmt)"
+go fmt ./...
+
+echo "[pre-commit] linting (golangci-lint)"
+golangci-lint run
+
+echo "[pre-commit] OK"

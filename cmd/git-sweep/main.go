@@ -1,3 +1,6 @@
+// Command git-sweep provides a cross-platform CLI that removes local branches
+// whose upstream has been removed. It is safe by default and supports dry-run
+// and non-interactive operation.
 package main
 
 import (
@@ -20,4 +23,4 @@ func main() {
 	}
 
 	fmt.Println("git-sweep", version)
-} 
+}
