@@ -1,0 +1,16 @@
+* text=auto eol=lf
+
+*.go text eol=lf diff=golang
+*.sh text eol=lf
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.md  text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+*.txt text eol=lf
+
+# Prevent vendored code from skewing language stats
+vendor/** linguist-vendored 

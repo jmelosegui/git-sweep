@@ -1,0 +1,40 @@
+# Binaries
+/bin/
+/dist/
+/build/
+/out/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go build cache
+*.test
+*.cover
+*.cov
+coverage/
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependency/vendor
+/vendor/
+
+# Logs
+*.log
+
+# Tools
+/tools/bin/
+
+# Temporary files
+.tmp/ 
+
+PLAN.md
