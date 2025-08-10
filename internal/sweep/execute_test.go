@@ -9,8 +9,8 @@ import (
 	"github.com/jmelosegui/git-sweep/internal/git"
 )
 
-type fakeRunner struct{
-	calls [][]string
+type fakeRunner struct {
+	calls  [][]string
 	failOn map[string]error
 }
 
@@ -30,7 +30,7 @@ func TestExecuteDeletions_SkipsCurrentBranch(t *testing.T) {
 	r := &fakeRunner{}
 	plan := Plan{
 		CurrentBranch: "main",
-		Candidates: []git.Branch{{Name: "main"}},
+		Candidates:    []git.Branch{{Name: "main"}},
 	}
 	res, err := ExecuteDeletions(context.Background(), r, plan, ExecuteOptions{MaxParallel: 1})
 	if err != nil {
@@ -45,7 +45,7 @@ func TestExecuteDeletions_ForceUsesCapitalD(t *testing.T) {
 	r := &fakeRunner{}
 	plan := Plan{
 		CurrentBranch: "main",
-		Candidates: []git.Branch{{Name: "feature/x"}},
+		Candidates:    []git.Branch{{Name: "feature/x"}},
 	}
 	_, err := ExecuteDeletions(context.Background(), r, plan, ExecuteOptions{MaxParallel: 1, ForceDelete: true})
 	if err != nil {
@@ -66,7 +66,7 @@ func TestExecuteDeletions_ReportsDeleteFailure(t *testing.T) {
 	}}
 	plan := Plan{
 		CurrentBranch: "main",
-		Candidates: []git.Branch{{Name: "feature/y"}},
+		Candidates:    []git.Branch{{Name: "feature/y"}},
 	}
 	res, err := ExecuteDeletions(context.Background(), r, plan, ExecuteOptions{MaxParallel: 1})
 	if err != nil {
