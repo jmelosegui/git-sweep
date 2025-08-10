@@ -5,13 +5,13 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"time"
 
 	gitpkg "github.com/jmelosegui/git-sweep/internal/git"
 	sweeppkg "github.com/jmelosegui/git-sweep/internal/sweep"
 	uipkg "github.com/jmelosegui/git-sweep/internal/ui"
+	pflag "github.com/spf13/pflag"
 )
 
 var (
@@ -19,21 +19,39 @@ var (
 )
 
 func main() {
-	// Flags
-	showVersion := flag.Bool("version", false, "print version and exit")
-	remote := flag.String("remote", "origin", "git remote to use for fetch --prune")
-	include := flag.String("include", "", "regex to include branch names")
-	exclude := flag.String("exclude", "", "regex to exclude branch names")
-	jsonOut := flag.Bool("json", false, "print plan as JSON")
-	noColor := flag.Bool("no-color", true, "no-op placeholder: color not yet implemented")
-	yes := flag.Bool("yes", false, "execute deletions (otherwise dry-run)")
-	debug := flag.Bool("debug", false, "enable debug output (not used yet)")
-	flag.Parse()
+	// GNU-style flags via pflag
+	var (
+		showHelp    bool
+		showVersion bool
+		remote      string
+		include     string
+		exclude     string
+		jsonOut     bool
+		noColor     bool
+		yes         bool
+		debug       bool
+	)
+
+	pflag.BoolVarP(&showHelp, "help", "h", false, "show help")
+	pflag.BoolVarP(&showVersion, "version", "V", false, "print version and exit")
+	pflag.StringVarP(&remote, "remote", "r", "origin", "git remote to use for fetch --prune")
+	pflag.StringVarP(&include, "include", "i", "", "regex to include branch names")
+	pflag.StringVarP(&exclude, "exclude", "x", "", "regex to exclude branch names")
+	pflag.BoolVarP(&jsonOut, "json", "j", false, "print plan as JSON")
+	pflag.BoolVar(&noColor, "no-color", true, "disable color output (placeholder)")
+	pflag.BoolVarP(&yes, "yes", "y", false, "execute deletions (otherwise dry-run)")
+	pflag.BoolVarP(&debug, "debug", "d", false, "enable debug output (placeholder)")
+	pflag.Parse()
+
+	if showHelp {
+		printUsage()
+		return
+	}
 
 	_ = noColor
 	_ = debug
 
-	if *showVersion {
+	if showVersion {
 		fmt.Println(version)
 		return
 	}
@@ -43,9 +61,9 @@ func main() {
 
 	r := gitpkg.ExecRunner{}
 	plan, err := sweeppkg.BuildPlan(ctx, r, sweeppkg.Options{
-		Remote:          *remote,
-		IncludePattern:  *include,
-		ExcludePattern:  *exclude,
+		Remote:          remote,
+		IncludePattern:  include,
+		ExcludePattern:  exclude,
 		ExtraProtected:  nil,
 		ProtectCurrent:  true,
 		ProtectUpstream: true,
@@ -55,12 +73,12 @@ func main() {
 		return
 	}
 
-	if err := uipkg.PrintPlan(plan, uipkg.Options{JSON: *jsonOut}); err != nil {
+	if err := uipkg.PrintPlan(plan, uipkg.Options{JSON: jsonOut}); err != nil {
 		fmt.Println("error:", err)
 		return
 	}
 
-	if !*yes {
+	if !yes {
 		return
 	}
 
@@ -73,4 +91,18 @@ func main() {
 	if err := uipkg.PrintDeletionResult(res); err != nil {
 		fmt.Println("error:", err)
 	}
+}
+
+func printUsage() {
+	fmt.Println("usage: git sweep [<options>]")
+	fmt.Println()
+	fmt.Println("    -V, --version           print version and exit")
+	fmt.Println("    -r, --remote <name>     git remote to use for fetch --prune (default: origin)")
+	fmt.Println("    -i, --include <regex>   include branches matching regex")
+	fmt.Println("    -x, --exclude <regex>   exclude branches matching regex")
+	fmt.Println("    -j, --json              machine-readable plan output (JSON)")
+	fmt.Println("    -y, --yes               execute deletions (consent to force-delete -D)")
+	fmt.Println("    -d, --debug             enable debug output (placeholder)")
+	fmt.Println("        --no-color          disable color output (placeholder)")
+	fmt.Println("    -h, --help              show this help")
 }
