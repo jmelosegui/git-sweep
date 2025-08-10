@@ -43,6 +43,8 @@ func PrintPlan(plan sweep.Plan, opts Options) error {
 		return err
 	}
 	for _, b := range plan.Candidates {
+		// For now we just print the branch name. Stage 6+ annotations can be added here
+		// when we include remote-merge checks in the plan (e.g., appears merged: yes/no).
 		if _, err := fmt.Fprintf(w, "  - %s\n", b.Name); err != nil {
 			return err
 		}

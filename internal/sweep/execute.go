@@ -13,6 +13,7 @@ import (
 // ExecuteOptions controls how deletion is performed.
 type ExecuteOptions struct {
 	MaxParallel int
+	ForceDelete bool // when true, use `git branch -D` instead of `-d`
 }
 
 // Result holds per-branch deletion outcomes.
@@ -23,7 +24,7 @@ type Result struct {
 
 // ExecuteDeletions deletes the selected branches with safety checks.
 // - Never deletes the current branch
-// - Uses `git branch -d` only; no force delete
+// - Uses `git branch -d` by default; can use -D when ForceDelete is true
 // - Runs with bounded parallelism
 func ExecuteDeletions(ctx context.Context, r git.Runner, plan Plan, execOpts ExecuteOptions) (Result, error) {
 	if execOpts.MaxParallel <= 0 {
@@ -54,7 +55,13 @@ func ExecuteDeletions(ctx context.Context, r git.Runner, plan Plan, execOpts Exe
 			defer wg.Done()
 			defer func() { <-sem }()
 
-			if err := git.DeleteLocalBranch(ctx, r, branchName); err != nil {
+			var err error
+			if execOpts.ForceDelete {
+				_, err = r.Run(ctx, "branch", "-D", branchName)
+			} else {
+				err = git.DeleteLocalBranch(ctx, r, branchName)
+			}
+			if err != nil {
 				mu.Lock()
 				res.Failed[branchName] = fmt.Errorf("delete failed: %w", err)
 				mu.Unlock()

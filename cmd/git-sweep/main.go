@@ -64,8 +64,8 @@ func main() {
 		return
 	}
 
-	// Execute deletions when --yes is provided
-	res, err := sweeppkg.ExecuteDeletions(ctx, r, plan, sweeppkg.ExecuteOptions{MaxParallel: 0})
+	// Execute deletions when --yes is provided; treat as consent to force-delete (-D)
+	res, err := sweeppkg.ExecuteDeletions(ctx, r, plan, sweeppkg.ExecuteOptions{MaxParallel: 0, ForceDelete: true})
 	if err != nil {
 		fmt.Println("error:", err)
 		return

@@ -105,6 +105,85 @@ func TestDiscoverGoneAndDeleteMergedBranch(t *testing.T) {
 	}
 }
 
+// TestForceDeleteUnmergedGoneBranch verifies we can forcibly delete a local branch
+// whose upstream is gone and which is not merged into main, by using ForceDelete.
+func TestForceDeleteUnmergedGoneBranch(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		if _, err := exec.LookPath("git"); err != nil {
+			t.Skip("git not available in PATH")
+		}
+	}
+
+	t.Parallel()
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+
+	tmp := t.TempDir()
+	remotePath := filepath.Join(tmp, "remote.git")
+	localPath := filepath.Join(tmp, "local")
+
+	runGit(t, tmp, "init", "--bare", remotePath)
+	mustMkdir(t, localPath)
+	runGit(t, localPath, "init")
+	runGit(t, localPath, "config", "user.name", "Test User")
+	runGit(t, localPath, "config", "user.email", "test@example.com")
+
+	writeFile(t, filepath.Join(localPath, "README.md"), "hello\n")
+	runGit(t, localPath, "add", ".")
+	runGit(t, localPath, "commit", "-m", "init")
+	runGit(t, localPath, "branch", "-M", "main")
+
+	remoteURL := toFileURL(remotePath)
+	runGit(t, localPath, "remote", "add", "origin", remoteURL)
+	runGit(t, localPath, "push", "-u", "origin", "main")
+
+	// Create feature branch, commit, push (do not merge back)
+	runGit(t, localPath, "checkout", "-b", "feat/b")
+	writeFile(t, filepath.Join(localPath, "feature_b.txt"), "feature-b\n")
+	runGit(t, localPath, "add", ".")
+	runGit(t, localPath, "commit", "-m", "feat b commit")
+	runGit(t, localPath, "push", "-u", "origin", "feat/b")
+
+	// Switch back to main to avoid deleting the current branch
+	runGit(t, localPath, "checkout", "main")
+
+	// Delete remote branch to simulate gone upstream
+	runGit(t, localPath, "push", "origin", ":feat/b")
+
+	// Build plan and execute with ForceDelete
+	r := gitpkg.ExecRunner{WorkDir: localPath}
+	plan, err := sweeppkg.BuildPlan(ctx, r, sweeppkg.Options{Remote: "origin", ProtectCurrent: true, ProtectUpstream: true})
+	if err != nil {
+		t.Fatalf("BuildPlan error: %v", err)
+	}
+
+	// Expect feat/b to appear
+	found := false
+	for _, b := range plan.Candidates {
+		if b.Name == "feat/b" {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Fatalf("expected feat/b in candidates, got %+v", plan.Candidates)
+	}
+
+	res, err := sweeppkg.ExecuteDeletions(ctx, r, plan, sweeppkg.ExecuteOptions{ForceDelete: true})
+	if err != nil {
+		t.Fatalf("ExecuteDeletions error: %v", err)
+	}
+	if len(res.Failed) != 0 {
+		t.Fatalf("unexpected failures: %+v", res.Failed)
+	}
+	// Verify branch is gone locally
+	cmd := exec.Command("git", "show-ref", "--verify", "--quiet", "refs/heads/feat/b")
+	cmd.Dir = localPath
+	if err := cmd.Run(); err == nil {
+		t.Fatalf("expected local branch to be deleted")
+	}
+}
+
 // runGit executes a git command in the given directory and fails the test with
 // a helpful message (including combined output) on error. This avoids hiding
 // errors that would otherwise appear only in subprocess output.
