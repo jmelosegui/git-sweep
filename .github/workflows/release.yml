@@ -22,14 +22,11 @@ jobs:
         with:
           go-version: '1.24.x'
 
-      - name: Install GoReleaser
+      - name: Release
         uses: goreleaser/goreleaser-action@v6
         with:
-          version: latest
+          version: v2.7.0
           distribution: goreleaser
-          install-only: true
-
-      - name: Release
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: goreleaser release --clean
