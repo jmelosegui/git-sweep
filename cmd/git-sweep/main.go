@@ -27,9 +27,7 @@ func main() {
 		include     string
 		exclude     string
 		jsonOut     bool
-		noColor     bool
 		yes         bool
-		debug       bool
 	)
 
 	pflag.BoolVarP(&showHelp, "help", "h", false, "show help")
@@ -38,18 +36,13 @@ func main() {
 	pflag.StringVarP(&include, "include", "i", "", "regex to include branch names")
 	pflag.StringVarP(&exclude, "exclude", "x", "", "regex to exclude branch names")
 	pflag.BoolVarP(&jsonOut, "json", "j", false, "print plan as JSON")
-	pflag.BoolVar(&noColor, "no-color", true, "disable color output (placeholder)")
 	pflag.BoolVarP(&yes, "yes", "y", false, "execute deletions (otherwise dry-run)")
-	pflag.BoolVarP(&debug, "debug", "d", false, "enable debug output (placeholder)")
 	pflag.Parse()
 
 	if showHelp {
 		printUsage()
 		return
 	}
-
-	_ = noColor
-	_ = debug
 
 	if showVersion {
 		fmt.Println(version)
@@ -115,7 +108,5 @@ func printUsage() {
 	fmt.Println("    -x, --exclude <regex>   exclude branches matching regex")
 	fmt.Println("    -j, --json              machine-readable plan output (JSON)")
 	fmt.Println("    -y, --yes               execute deletions (consent to force-delete -D)")
-	fmt.Println("    -d, --debug             enable debug output (placeholder)")
-	fmt.Println("        --no-color          disable color output (placeholder)")
 	fmt.Println("    -h, --help              show this help")
 }
