@@ -1,0 +1,112 @@
+name: Bug report
+description: File a bug/issue to help us improve git-sweep
+labels: [bug]
+title: "bug: <concise summary>"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+        Please search existing issues first to avoid duplicates.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-flight checklist
+      options:
+        - label: I have searched existing issues and discussions
+          required: true
+        - label: I am using the latest version (or a recent pre-release)
+          required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the problem.
+      placeholder: What happened? What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Provide a minimal set of steps or a repository to reproduce the issue.
+      placeholder: |
+        1. Run 'git sweep ...'
+        2. Observe output ...
+        3. ...
+      render: bash
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and logs/output
+      description: Paste the actual output, stack traces, or relevant logs. Redact any secrets.
+      render: text
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: git-sweep version
+      description: Output of 'git sweep -V'.
+      placeholder: v0.0.1-rc.1
+    validations:
+      required: true
+
+  - type: input
+    id: go-version
+    attributes:
+      label: Go version (if building locally)
+      placeholder: go1.24.x
+    validations:
+      required: false
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Windows
+        - macOS
+        - Linux
+    validations:
+      required: true
+
+  - type: input
+    id: os-details
+    attributes:
+      label: OS details
+      description: Version/build (e.g., Windows 11 23H2, Ubuntu 22.04, macOS 14.5).
+    validations:
+      required: false
+
+  - type: input
+    id: git-version
+    attributes:
+      label: Git version
+      description: Output of 'git --version'.
+      placeholder: git version 2.45.2
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: Add any other context/screenshots that might help.
+    validations:
+      required: false
