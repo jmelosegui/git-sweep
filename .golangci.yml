@@ -1,14 +1,7 @@
-version: 2
+version: "2"
+
 run:
   timeout: 3m
-  tests: true
-  skip-dirs:
-    - vendor
-    - bin
-    - dist
-    - build
-    - out
-    - tools
 
 linters:
   enable:
@@ -20,25 +13,3 @@ linters:
     - revive
     - gocritic
     - misspell
-
-linters-settings:
-  revive:
-    rules:
-      - name: exported
-        severity: warning
-        arguments:
-          - disableStutteringCheck
-      - name: blank-imports
-      - name: dot-imports
-      - name: var-naming
-      - name: if-return
-      - name: time-naming
-  misspell:
-    locale: US
-
-issues:
-  exclude-use-default: false
-  max-issues-per-linter: 0
-  max-same-issues: 0
-  exclude:
-    - "^Error return value of .*(Close|Stop|Quit|Flush).* is not checked$"
