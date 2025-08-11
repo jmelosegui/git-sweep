@@ -73,16 +73,29 @@ func main() {
 		return
 	}
 
-	if err := uipkg.PrintPlan(plan, uipkg.Options{JSON: jsonOut}); err != nil {
+	count, err := uipkg.PrintPlan(plan, uipkg.Options{JSON: jsonOut})
+	if err != nil {
 		fmt.Println("error:", err)
 		return
 	}
 
-	if !yes {
+	if count == 0 {
 		return
 	}
 
-	// Execute deletions when --yes is provided; treat as consent to force-delete (-D)
+	// Interactive confirm if not --yes
+	if !yes {
+		ok, err := uipkg.ConfirmDeletion(count)
+		if err != nil {
+			fmt.Println("error:", err)
+			return
+		}
+		if !ok {
+			return
+		}
+	}
+
+	// Execute deletions; --yes or confirmed implies force-delete (-D)
 	res, err := sweeppkg.ExecuteDeletions(ctx, r, plan, sweeppkg.ExecuteOptions{MaxParallel: 0, ForceDelete: true})
 	if err != nil {
 		fmt.Println("error:", err)
