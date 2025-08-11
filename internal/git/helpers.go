@@ -20,6 +20,10 @@ func Version(ctx context.Context, r Runner) (string, error) {
 func IsInsideWorkTree(ctx context.Context, r Runner) (bool, error) {
 	res, err := r.Run(ctx, "rev-parse", "--is-inside-work-tree")
 	if err != nil {
+		// Check if this is the "not a git repository" error that Git commonly shows
+		if strings.Contains(res.Stderr, "not a git repository") {
+			return false, fmt.Errorf("fatal: not a git repository (or any of the parent directories): .git")
+		}
 		return false, err
 	}
 	s := strings.TrimSpace(strings.ToLower(res.Stdout))
