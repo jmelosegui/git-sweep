@@ -14,9 +14,7 @@ import (
 	pflag "github.com/spf13/pflag"
 )
 
-var (
-	version = "v0.0.0-dev"
-)
+var version = "v0.0.0-dev"
 
 func main() {
 	// GNU-style flags via pflag
