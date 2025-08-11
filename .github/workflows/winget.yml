@@ -1,0 +1,20 @@
+name: winget
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Submit to winget-pkgs
+        uses: vedantmgoyal2009/winget-releaser@v2
+        with:
+          identifier: jmelosegui.git-sweep
+          token: ${{ secrets.WINGET_TOKEN }}
+          release-tag: ${{ github.event.release.tag_name }}
+          installers-regex: 
+            ^git-sweep_.*_(windows)_.*\.(zip|exe)$
+          # Set to true to automatically submit; otherwise it will open a PR draft
+          publish: true

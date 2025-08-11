@@ -1,0 +1,26 @@
+name: snapcraft
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    env:
+      SNAP_VERSION: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Snapcraft
+        uses: snapcore/action-build@v1
+
+      - name: Build snap
+        run: snapcraft
+
+      - name: Upload to Snap Store
+        if: success()
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        run: snapcraft upload *.snap --release=edge

@@ -1,0 +1,30 @@
+name: git-sweep
+base: core22
+summary: Remove local branches whose remote has been deleted (gone)
+description: |
+  git-sweep is a small, cross-platform CLI that removes local branches whose upstream has been removed.
+  Safe by default, dry-run first, and designed for Windows/macOS/Linux.
+
+grade: devel
+confinement: strict
+
+apps:
+  git-sweep:
+    command: bin/git-sweep
+    plugs: [home, network]
+
+parts:
+  git-sweep:
+    plugin: go
+    source: .
+    build-snaps: [go]
+    go-channel: 1.24/stable
+    build-environment:
+      - CGO_ENABLED: '0'
+    override-build: |
+      craftctl default
+      # Derive version from SNAP_VERSION env (set by CI), strip leading 'v'
+      version="${SNAP_VERSION:-0.0.0-dev}"
+      version="${version#v}"
+      craftctl set version="$version"
+      install -D -m 0755 "$CRAFT_PART_BUILD/bin/git-sweep" "$CRAFT_STAGE/bin/git-sweep"

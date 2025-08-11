@@ -4,21 +4,16 @@ A small, cross-platform Go CLI that removes local branches whose upstream has be
 
 ## Install
 
-- Windows (winget):
+### Windows (winget) is planned; once done you'll be able to:
   ```powershell
   winget install jmelosegui.git-sweep
   ```
 
-- Direct download (macOS/Linux/Windows):
-  - Download the latest archive for your OS/arch from the Releases page
-  - Extract and place `git-sweep` (or `git-sweep.exe`) in your PATH
-
-Notes:
-- Homebrew Core (macOS) submission is planned; once accepted you’ll be able to:
+### Homebrew Core (macOS) submission is planned; once accepted you’ll be able to:
   ```sh
   brew install git-sweep
   ```
-- Linux universal channels (Snap/Nix) are planned; for now, use direct downloads.
+### Linux universal channels (Snap/Nix) are planned; for now, use direct downloads.
 
 ### Manual install from GitHub Releases (including pre-releases)
 1) Go to the [repository Releases page](https://github.com/jmelosegui/git-sweep/releases) and pick a version. To use a pre-release, select a tag labeled “Pre-release”.
