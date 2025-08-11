@@ -2,9 +2,6 @@ project_name: git-sweep
 
 version: 2
 
-go:
-  mod: mod
-
 builds:
   - id: git-sweep
     main: ./cmd/git-sweep
