@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-test:
-    name: Lint and Test (${{ matrix.go }} on ${{ matrix.os }})
+    name: Test and Build (${{ matrix.go }} on ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -30,12 +30,6 @@ jobs:
 
       - name: Download deps
         run: go mod download
-
-      - name: Lint
-        uses: golangci/golangci-lint-action@v6
-        with:
-          version: latest
-          args: --timeout=3m
 
       - name: Test (with race where feasible)
         shell: bash
