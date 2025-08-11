@@ -14,43 +14,46 @@ type Options struct {
 }
 
 // PrintPlan prints a sweep.Plan either as JSON or a human-readable summary.
-func PrintPlan(plan sweep.Plan, opts Options) error {
+// It returns the number of candidates printed in the human-readable mode.
+func PrintPlan(plan sweep.Plan, opts Options) (int, error) {
 	if opts.JSON {
 		enc := json.NewEncoder(os.Stdout)
 		enc.SetIndent("", "  ")
-		return enc.Encode(plan)
+		return 0, enc.Encode(plan)
 	}
 	w := os.Stdout
-	if _, err := fmt.Fprintf(w, "Repository: %s\n", plan.RepoRoot); err != nil {
-		return err
+	if _, err := fmt.Fprintf(w, "On branch %s\n", plan.CurrentBranch); err != nil {
+		return 0, err
 	}
-	if plan.Remote != "" {
-		if _, err := fmt.Fprintf(w, "Remote: %s\n", plan.Remote); err != nil {
-			return err
+	if plan.CurrentUpstream != "" {
+		if _, err := fmt.Fprintf(w, "Your branch is up to date with '%s'.\n\n", plan.CurrentUpstream); err != nil {
+			return 0, err
 		}
-	}
-	if _, err := fmt.Fprintf(w, "Current: %s (upstream: %s)\n\n", plan.CurrentBranch, plan.CurrentUpstream); err != nil {
-		return err
+	} else {
+		if _, err := fmt.Fprintln(w, "(no upstream configured)"); err != nil {
+			return 0, err
+		}
+		if _, err := fmt.Fprintln(w); err != nil {
+			return 0, err
+		}
 	}
 
 	if len(plan.Candidates) == 0 {
-		if _, err := fmt.Fprintln(w, "No local branches with gone upstreams found."); err != nil {
-			return err
+		if _, err := fmt.Fprintln(w, "nothing to sweep, local branches are clean"); err != nil {
+			return 0, err
 		}
-		return nil
+		return 0, nil
 	}
-	if _, err := fmt.Fprintln(w, "Branches to delete (gone upstream):"); err != nil {
-		return err
+	if _, err := fmt.Fprintln(w, "The following local branches have a gone upstream:"); err != nil {
+		return 0, err
 	}
 	for _, b := range plan.Candidates {
-		// For now we just print the branch name. Stage 6+ annotations can be added here
-		// when we include remote-merge checks in the plan (e.g., appears merged: yes/no).
-		if _, err := fmt.Fprintf(w, "  - %s\n", b.Name); err != nil {
-			return err
+		if _, err := fmt.Fprintf(w, "  %s\n", b.Name); err != nil {
+			return 0, err
 		}
 	}
-	if _, err := fmt.Fprintf(w, "\nTotal: %d\n", len(plan.Candidates)); err != nil {
-		return err
+	if _, err := fmt.Fprintf(w, "\n(%d to delete)\n", len(plan.Candidates)); err != nil {
+		return 0, err
 	}
-	return nil
+	return len(plan.Candidates), nil
 }
