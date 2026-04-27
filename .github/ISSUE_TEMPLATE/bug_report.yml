@@ -63,7 +63,7 @@ body:
     attributes:
       label: git-sweep version
       description: Output of 'git sweep -V'.
-      placeholder: v0.0.1-rc.1
+      placeholder: v0.1.0
     validations:
       required: true
 
