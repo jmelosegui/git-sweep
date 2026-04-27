@@ -4,12 +4,20 @@ on:
   push:
     tags:
       - 'v*.*.*'
+  pull_request:
+    paths:
+      - 'snap/**'
+      - '.github/workflows/snapcraft.yml'
+  workflow_dispatch:
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
     env:
-      SNAP_VERSION: ${{ github.ref_name }}
+      # Use the tag as the snap version on tag pushes; otherwise use a dev
+      # placeholder so non-tag triggers (PRs, manual runs) still produce a
+      # valid version string.
+      SNAP_VERSION: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || '0.0.0-dev' }}
     steps:
       - uses: actions/checkout@v6
 
@@ -20,7 +28,10 @@ jobs:
         run: snapcraft
 
       - name: Upload to Snap Store
-        if: success()
+        # Only publish on tag pushes. PRs and manual dispatch builds stop
+        # at the build step so we can iterate on snap/snapcraft.yaml
+        # without touching the store.
+        if: startsWith(github.ref, 'refs/tags/v')
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
         run: snapcraft upload *.snap --release=edge

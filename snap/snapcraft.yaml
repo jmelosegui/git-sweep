@@ -1,5 +1,6 @@
 name: git-sweep
 base: core22
+adopt-info: git-sweep
 summary: Remove local branches whose remote has been deleted (gone)
 description: |
   git-sweep is a small, cross-platform CLI that removes local branches whose upstream has been removed.
