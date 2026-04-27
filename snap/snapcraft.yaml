@@ -17,8 +17,7 @@ parts:
   git-sweep:
     plugin: go
     source: .
-    build-snaps: [go]
-    go-channel: 1.24/stable
+    build-snaps: [go/1.24/stable]
     build-environment:
       - CGO_ENABLED: '0'
     override-build: |
