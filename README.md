@@ -1,8 +1,8 @@
 # git-sweep
 
-![git-sweep](https://jmelosegui.com/img/projects/git-sweep.png)
-
 A small, cross-platform Go CLI that removes local branches whose upstream has been removed (e.g., branches marked as "[gone]"). Safe by default, dry-run first, and designed for Windows/macOS/Linux.
+
+![git-sweep](https://jmelosegui.com/img/projects/git-sweep.png)
 
 ## Installation
 
