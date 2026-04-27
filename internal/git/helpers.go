@@ -2,9 +2,16 @@ package git
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 )
+
+// ErrNotGitRepository is returned when a git command fails because the
+// working directory is not inside a git repository. The error message
+// mirrors Git's own "fatal: not a git repository" output so it can be
+// surfaced to users without further translation.
+var ErrNotGitRepository = errors.New("fatal: not a git repository (or any of the parent directories): .git")
 
 // Version returns the output of `git --version`.
 func Version(ctx context.Context, r Runner) (string, error) {
@@ -20,6 +27,9 @@ func Version(ctx context.Context, r Runner) (string, error) {
 func IsInsideWorkTree(ctx context.Context, r Runner) (bool, error) {
 	res, err := r.Run(ctx, "rev-parse", "--is-inside-work-tree")
 	if err != nil {
+		if strings.Contains(res.Stderr, "not a git repository") {
+			return false, ErrNotGitRepository
+		}
 		return false, err
 	}
 	s := strings.TrimSpace(strings.ToLower(res.Stdout))

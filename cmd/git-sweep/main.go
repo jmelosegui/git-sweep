@@ -5,6 +5,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -62,6 +63,10 @@ func main() {
 		ProtectUpstream: true,
 	})
 	if err != nil {
+		if errors.Is(err, gitpkg.ErrNotGitRepository) {
+			fmt.Println(err)
+			return
+		}
 		fmt.Println("error:", err)
 		return
 	}
