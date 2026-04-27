@@ -4,22 +4,28 @@ A small, cross-platform Go CLI that removes local branches whose upstream has be
 
 ## Installation
 
-### Package Managers *(planned)*
-Once published, you’ll be able to install with:
+### One-line install
 
-- **Windows** (winget)
-  ```powershell
-  winget install jmelosegui.git-sweep
-  ```
+**Linux / macOS**
+```sh
+curl -fsSL https://raw.githubusercontent.com/jmelosegui/git-sweep/main/docs/install.sh | bash
+```
+Pass `-s -- --prerelease` to opt into the latest pre-release tag:
+```sh
+curl -fsSL https://raw.githubusercontent.com/jmelosegui/git-sweep/main/docs/install.sh | bash -s -- --prerelease
+```
+The script installs to `~/.git-sweep/bin` (override with `INSTALL_DIR=...`) and adds that directory to your shell rc (`bash`, `zsh`, `fish`, or `~/.profile` as a fallback). Reload your shell or `source` the rc file afterwards.
 
-- **macOS** (Homebrew Core)
-  ```sh
-  brew install git-sweep
-  ```
-- **Linux** (Debian/Ubuntu via apt)
-   ```sh 
-  sudo apt install git-sweep
-  ```
+**Windows (PowerShell)**
+```powershell
+irm https://raw.githubusercontent.com/jmelosegui/git-sweep/main/docs/install.ps1 | iex
+```
+For pre-releases, run the script with the `-Prerelease` switch:
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/jmelosegui/git-sweep/main/docs/install.ps1))) -Prerelease
+```
+The script installs to `%LOCALAPPDATA%\git-sweep` (override with `$env:GIT_SWEEP_INSTALL_DIR`) and updates your user `Path`. Restart your terminal afterwards.
+
 ### Manual install from GitHub Releases (including pre-releases)
 1) Go to the [repository Releases page](https://github.com/jmelosegui/git-sweep/releases) and pick a version. To use a pre-release, select a tag labeled “Pre-release”.
 2) Download the archive matching your OS/arch:
@@ -76,4 +82,8 @@ git sweep -y
 JSON plan output:
 ```sh
 git sweep --json
-``` 
+```
+
+### Update notifications
+
+`git-sweep` checks the GitHub Releases API at most once every 24 hours and prints a one-line notice on `stderr` when a newer version is available. The check is skipped automatically when `--json` is set, when `stderr` is not a terminal (CI, redirects), and for the development build. To opt out entirely, set `GIT_SWEEP_NO_UPDATE_CHECK=1`.
