@@ -1,7 +1,7 @@
 # git-sweep installer for Windows
 # Usage:
-#   irm https://raw.githubusercontent.com/jmelosegui/git-sweep/main/docs/install.ps1 | iex
-#   & ([scriptblock]::Create((irm https://raw.githubusercontent.com/jmelosegui/git-sweep/main/docs/install.ps1))) -Prerelease
+#   irm https://raw.githubusercontent.com/jmelosegui/git-sweep/main/scripts/install.ps1 | iex
+#   & ([scriptblock]::Create((irm https://raw.githubusercontent.com/jmelosegui/git-sweep/main/scripts/install.ps1))) -Prerelease
 
 [CmdletBinding()]
 param(

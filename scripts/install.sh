@@ -3,8 +3,8 @@ set -e
 
 # git-sweep installer for Linux and macOS
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/jmelosegui/git-sweep/main/docs/install.sh | bash
-#   curl -fsSL https://raw.githubusercontent.com/jmelosegui/git-sweep/main/docs/install.sh | bash -s -- --prerelease
+#   curl -fsSL https://raw.githubusercontent.com/jmelosegui/git-sweep/main/scripts/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/jmelosegui/git-sweep/main/scripts/install.sh | bash -s -- --prerelease
 
 REPO="jmelosegui/git-sweep"
 INSTALL_DIR="${INSTALL_DIR:-$HOME/.git-sweep/bin}"

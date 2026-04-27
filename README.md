@@ -8,21 +8,21 @@ A small, cross-platform Go CLI that removes local branches whose upstream has be
 
 **Linux / macOS**
 ```sh
-curl -fsSL https://raw.githubusercontent.com/jmelosegui/git-sweep/main/docs/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jmelosegui/git-sweep/main/scripts/install.sh | bash
 ```
 Pass `-s -- --prerelease` to opt into the latest pre-release tag:
 ```sh
-curl -fsSL https://raw.githubusercontent.com/jmelosegui/git-sweep/main/docs/install.sh | bash -s -- --prerelease
+curl -fsSL https://raw.githubusercontent.com/jmelosegui/git-sweep/main/scripts/install.sh | bash -s -- --prerelease
 ```
 The script installs to `~/.git-sweep/bin` (override with `INSTALL_DIR=...`) and adds that directory to your shell rc (`bash`, `zsh`, `fish`, or `~/.profile` as a fallback). Reload your shell or `source` the rc file afterwards.
 
 **Windows (PowerShell)**
 ```powershell
-irm https://raw.githubusercontent.com/jmelosegui/git-sweep/main/docs/install.ps1 | iex
+irm https://raw.githubusercontent.com/jmelosegui/git-sweep/main/scripts/install.ps1 | iex
 ```
 For pre-releases, run the script with the `-Prerelease` switch:
 ```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/jmelosegui/git-sweep/main/docs/install.ps1))) -Prerelease
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/jmelosegui/git-sweep/main/scripts/install.ps1))) -Prerelease
 ```
 The script installs to `%LOCALAPPDATA%\git-sweep` (override with `$env:GIT_SWEEP_INSTALL_DIR`) and updates your user `Path`. Restart your terminal afterwards.
 

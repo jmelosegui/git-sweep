@@ -139,8 +139,8 @@ func printUpdateNotice(ch <-chan updatepkg.Result) {
 			return
 		}
 		fmt.Fprintf(os.Stderr, "\ngit-sweep: a newer version %s is available (you have %s).\n", res.LatestTag, version)
-		fmt.Fprintln(os.Stderr, "  Linux/macOS: curl -fsSL https://raw.githubusercontent.com/jmelosegui/git-sweep/main/docs/install.sh | bash")
-		fmt.Fprintln(os.Stderr, "  Windows:     irm https://raw.githubusercontent.com/jmelosegui/git-sweep/main/docs/install.ps1 | iex")
+		fmt.Fprintln(os.Stderr, "  Linux/macOS: curl -fsSL https://raw.githubusercontent.com/jmelosegui/git-sweep/main/scripts/install.sh | bash")
+		fmt.Fprintln(os.Stderr, "  Windows:     irm https://raw.githubusercontent.com/jmelosegui/git-sweep/main/scripts/install.ps1 | iex")
 	case <-time.After(250 * time.Millisecond):
 	}
 }

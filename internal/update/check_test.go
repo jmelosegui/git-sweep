@@ -21,10 +21,10 @@ func TestIsNewer(t *testing.T) {
 		{"v2.0.0", "v1.99.99", true},
 		{"v1.0.0", "v1.0.0", false},
 		{"v1.0.0", "v1.0.1", false},
-		{"v1.0.0", "v1.0.0-rc.1", true},   // release > pre-release
+		{"v1.0.0", "v1.0.0-rc.1", true}, // release > pre-release
 		{"v1.0.0-rc.2", "v1.0.0-rc.1", true},
-		{"v1.0.0-rc.1", "v1.0.0", false},  // pre-release < release
-		{"v1.0.0", "v0.0.0-dev", false},   // dev sentinel never nags
+		{"v1.0.0-rc.1", "v1.0.0", false}, // pre-release < release
+		{"v1.0.0", "v0.0.0-dev", false},  // dev sentinel never nags
 		{"", "v1.0.0", false},
 		{"v1.0.0", "", false},
 		{"1.0.1", "1.0.0", true}, // tolerant of missing v
